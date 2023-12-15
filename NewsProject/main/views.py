@@ -5,12 +5,11 @@ from django.http import HttpResponseNotFound
 
 # Create your views here.
 def index(request):
-    return HttpResponse(' Главная страница ')
-
+#   return HttpResponse(' Главная страница ')
+    return render(request, 'main/index.html')
 
 def about(request):
     return HttpResponse(' О сайте ')
-
 
 def contacts(request):
     return HttpResponse(' Наши контакты ')
