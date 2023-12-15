@@ -1,0 +1,1 @@
+# DjangoNewsRostelecom2
