@@ -9,10 +9,12 @@ def index(request):
     return render(request, 'main/index.html')
 
 def about(request):
-    return HttpResponse(' О сайте ')
+#    return HttpResponse(' О сайте ')
+    return render(request, 'main/about.html')
 
 def contacts(request):
-    return HttpResponse(' Наши контакты ')
+#    return HttpResponse(' Наши контакты ')
+    return render(request, 'main/contacts.html')
 
 def page_not_found(request, exception):
     return HttpResponseNotFound("<h1> Страница не найдена </h1>")
