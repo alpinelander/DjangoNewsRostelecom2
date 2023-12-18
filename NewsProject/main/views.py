@@ -16,5 +16,8 @@ def contacts(request):
 #    return HttpResponse(' Наши контакты ')
     return render(request, 'main/contacts.html')
 
+def sidebar(request):
+    return render(request, 'main/sidebar.html')
+
 def page_not_found(request, exception):
     return HttpResponseNotFound("<h1> Страница не найдена </h1>")
