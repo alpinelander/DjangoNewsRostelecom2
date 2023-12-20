@@ -49,7 +49,7 @@
               </li>
 
               <li class="nav-item">
-                 <a href=# {% if request.resolver_match.view_name  == 'news' %} class="link-active" aria-current="page" {% endif %}>
+                 <a href="{% url 'news_index' %}" {% if request.resolver_match.view_name  == 'news_index' %} class="link-active" aria-current="page" {% endif %}>
                     <i class="fa fa-bars menu-icon"></i> <div class="d-none d-lg-block">Все новости</div>
                 </a>
               </li>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "bootstrap5",
     #    "main",
     "main.apps.MainConfig",
+    "news",
 ]
 
 MIDDLEWARE = [
@@ -117,6 +118,7 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
     "main/static",
+    "news/static",
 ]
 
 # Default primary key field type
