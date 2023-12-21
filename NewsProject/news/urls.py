@@ -17,5 +17,7 @@ Including another URLconf
 from django.urls import path
 from . import views
 urlpatterns = [
-    path("", views.news, name = 'news_index'),
+    path("", views.index, name = 'news_index'),
+    path("<int:id>", views.detail, name='news_detail'),
+    path("add_news", views.add_news, name='add_news'),
 ]

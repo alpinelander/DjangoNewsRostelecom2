@@ -19,3 +19,13 @@ class Article(models.Model):
     # методы моделей
     def __str__(self):
         return f'{self.title} от: {str(self.date)[:10]}'
+# тут встроенный метод мы его переопределяем
+
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
+# метаданные модели, все что не связано с полями, а связанно с самой моделью
+
+    class Meta:
+        ordering = ['date','title']
+        verbose_name = 'Новость'
+        verbose_name_plural = 'Новости'
