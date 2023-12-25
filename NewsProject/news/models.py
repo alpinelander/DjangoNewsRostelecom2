@@ -11,7 +11,6 @@ class Tag(models.Model):
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
-
 class Article(models.Model):
     categories = (
         ('E', 'Economic'),
@@ -30,6 +29,13 @@ class Article(models.Model):
     # методы моделей
     def __str__(self):
         return f'{self.title} от: {str(self.date)[:10]}'
+
+    def tag_list(self):
+        s = ''
+        for t in self.tags.all():
+            s+=t.title+' '
+        return s
+
 # тут встроенный метод мы его переопределяем
 
     def get_absolute_url(self):

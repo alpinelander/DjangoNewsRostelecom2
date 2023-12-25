@@ -1,0 +1,23 @@
+{% extends 'main/base_template.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block title %} Страница обратной связи {% endblock %}
+
+{% block content %}
+        <div class="row">
+            <div class="text-center" style="margin-top:30px;">
+                    <h1 >Страница обратной свзяи</h1>
+            </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <p>введите имя</p>
+                    {{ form.name }}
+                    <p>введите почту</p>
+                    {{ form.email }}
+                    <p>сообщение</p>
+                    {{ form.message }}
+                    <br>
+                    <input type="submit" class="btn btn-success" value="отправить">
+                </form>
+        </div>
+{% endblock %}
