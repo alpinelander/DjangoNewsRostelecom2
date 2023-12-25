@@ -1,21 +1,17 @@
 {% extends 'main/base_template.html' %}
 {% load static %}
 {% load bootstrap5 %}
+{% load crispy_forms_tags %}
 {% block title %} Страница обратной связи {% endblock %}
 
 {% block content %}
         <div class="row">
             <div class="text-center" style="margin-top:30px;">
-                    <h1 >Страница обратной свзяи</h1>
+                    <h1 >Страница обратной связи</h1>
             </div>
                 <form method="post">
                     {% csrf_token %}
-                    <p>введите имя</p>
-                    {{ form.name }}
-                    <p>введите почту</p>
-                    {{ form.email }}
-                    <p>сообщение</p>
-                    {{ form.message }}
+                    {{ form|crispy }}
                     <br>
                     <input type="submit" class="btn btn-success" value="отправить">
                 </form>

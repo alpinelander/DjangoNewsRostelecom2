@@ -3,7 +3,15 @@ from .models import *
 from .forms import *
 # Create your views here.
 def contact_page(request):
-    form = ContactForm()
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            print('Сообщение отправлено', form.cleaned_data)
+        else:
+            print(form.errors)
+    else:
+        form = ContactForm()
+        form.name='Любимый клиент'
     context = {'form': form}
     return render(request,'users/contact_page.html',context)
 
