@@ -1,6 +1,26 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from .models import *
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+from .forms import *
+@login_required(login_url="/")
+def create_article(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            current_user = request.user
+            if current_user.id != None: #проверили что не аноним
+
+                new_article = form.save(commit=False)
+                new_article.author = current_user
+                new_article.save() #сохраняем в БД
+                form.save_m2m()
+                form = ArticleForm()
+
+                return redirect('news_index')
+    else:
+        form = ArticleForm()
+    return render(request,'news/create_article.html', {'form':form})
 
 def news(request):
 #   return HttpResponse(' Главная страница ')

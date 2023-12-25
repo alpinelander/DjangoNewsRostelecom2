@@ -20,4 +20,6 @@ urlpatterns = [
     path("", views.index, name = 'news_index'),
     path("<int:id>", views.detail, name='news_detail'),
     path("add_news", views.add_news, name='add_news'),
+    path('create', views.create_article, name='create_article'),
+
 ]
