@@ -1,8 +1,25 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .models import *
 from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView, DeleteView, UpdateView
 # Create your views here.
 from .forms import *
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'news/news_detail.html'
+    context_object_name = 'article'
+
+class ArticleDeleteView(DeleteView):
+    success_url = '/news/'
+    model = Article
+    template_name = 'news/delete_article.html'
+
+
+class ArticleUpdateView(UpdateView):
+    model = Article
+    template_name = 'news/create_article.html'
+    fields = ['title','anouncement','text','tags']
 @login_required(login_url="/")
 def create_article(request):
     if request.method == 'POST':
@@ -22,9 +39,9 @@ def create_article(request):
         form = ArticleForm()
     return render(request,'news/create_article.html', {'form':form})
 
-def news(request):
+#def news(request):
 #   return HttpResponse(' Главная страница ')
-    return render(request, 'news/news.html')
+#    return render(request, 'news/news.html')
 
 # def index(request):
 #     article = Article.objects.all().first()
@@ -32,28 +49,47 @@ def news(request):
 #     return render(request, 'news/index.html', context)
 
 def index(request):
-    author_list = User.objects.all()
-    selected = 0
-    if request.method=="POST":
-        selected = int(request.POST.get('author_filter'))
-        if  selected == 0:
+    categories = Article.categories #создали перечень категорий
+    author_list = User.objects.all() #создали перечень авторов
+    if request.method == "POST":
+        selected_author = int(request.POST.get('author_filter'))
+        selected_category = int(request.POST.get('category_filter'))
+        request.session['selected_author'] = selected_author
+        request.session['selected_category'] = selected_category
+        if selected_author == 0: #выбраны все авторы
             articles = Article.objects.all()
         else:
-            articles = Article.objects.filter(author=selected)
-    else:
-        articles = Article.objects.all()
-    context = {'articles':articles, 'author_list':author_list,'selected':selected }
+            articles = Article.objects.filter(author=selected_author)
+        if selected_category != 0: #фильтруем найденные по авторам результаты по категориям
+            articles = articles.filter(category__icontains=categories[selected_category-1][0])
+    else: #если страница открывется впервые или нас переадресовала сюда функция поиск
+        selected_author = request.session.get('selected_author')
+        if selected_author != None: #если не пустое - находим нужные ноновсти
+            articles = Article.objects.filter(author=selected_author)
+        else:
+            selected_author = 0
+        selected_category = 0
+        value = request.session.get('search_input') #вытаскиваем из сессии значение поиска
+        if value != None: #если не пустое - находим нужные новсти
+            articles = Article.objects.filter(title__icontains=value)
+            del request.session['search_input'] #чистим сессию, чтобы этот фильтр не "заело"
+        else:
+            #если не оказалось таокго ключика или запрос был кривой - отображаем все элементы
+            articles = Article.objects.all()
+    #сортировка от свежих к старым новостям
+    articles=articles.order_by('-date')
+    context = {'author_list':author_list, 'selected_author':selected_author,
+               'categories':categories,'selected_category': selected_category,
+               'articles':articles
+               }
+
     return render(request,'news/news_list.html',context)
 
-def detail(request,id):
-    article = Article.objects.filter(id = id).first()
-    context = {'article':article}
-    return HttpResponse(f'Выводим конкретную новость <h1>{ article.title }<h1/>')
 
-def add_news(request):
-    author = User.objects.get(id=request.user.id)
-    article = Article(author=author, title='Заголовок новости',
-                      anouncement='кратко о новости', text='Текст новости')
-    article.save()
-    context = {'article':article}
-    return HttpResponse(f'добавлена новость <h1>{ article.title }<h1/>')
+# def add_news(request):
+#     author = User.objects.get(id=request.user.id)
+#     article = Article(author=author, title='Заголовок новости',
+#                       anouncement='кратко о новости', text='Текст новости')
+#     article.save()
+#     context = {'article':article}
+#     return HttpResponse(f'добавлена новость <h1>{ article.title }<h1/>')
