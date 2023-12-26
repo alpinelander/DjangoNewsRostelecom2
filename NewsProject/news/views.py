@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .models import *
+from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, DeleteView, UpdateView
 # Create your views here.
@@ -11,7 +12,7 @@ class ArticleDetailView(DetailView):
     context_object_name = 'article'
 
 class ArticleDeleteView(DeleteView):
-    success_url = '/news/'
+    success_url = reverse_lazy('news_index')
     model = Article
     template_name = 'news/delete_article.html'
 
