@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
+
 # Create your models here.
 class Tag(models.Model):
     title = models.CharField(max_length=80)
@@ -25,6 +27,7 @@ class Article(models.Model):
     date = models.DateTimeField('Дата новости', auto_now=True)
     category = models.CharField(choices=categories, max_length=20, verbose_name='Категории')
     tags = models.ManyToManyField(to=Tag, blank=True)
+    slug = models.SlugField()
 
     # методы моделей
     def __str__(self):
@@ -47,3 +50,23 @@ class Article(models.Model):
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
 
+    def image_tag(self):
+        image = Image.objects.filter(article=self)
+        print('!!!!',image)
+        if image:
+            return mark_safe(f'<img src="{image[0].image.url}" height="50px" width="auto" />')
+        else:
+            return '(no image)'
+class Image(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    title = models.CharField(max_length=50, blank=True)
+    image = models.ImageField(upload_to='article_images/',null=True,blank=True) #лучше добавить поле default !!!
+
+    def __str__(self):
+        return self.title
+
+    def image_tag(self):
+        if self.image is not None:
+            return mark_safe(f'<img src="{self.image.url}" height="50px" width="auto" />')
+        else:
+            return '(no image)'
