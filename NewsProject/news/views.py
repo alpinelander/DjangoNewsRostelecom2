@@ -24,7 +24,7 @@ class ArticleUpdateView(UpdateView):
 @login_required(login_url="/")
 def create_article(request):
     if request.method == 'POST':
-        form = ArticleForm(request.POST)
+        form = ArticleForm(request.POST,request.FILES)
         if form.is_valid():
             current_user = request.user
             if current_user.id != None: #проверили что не аноним
@@ -34,6 +34,8 @@ def create_article(request):
                 new_article.save() #сохраняем в БД
                 form.save_m2m()
                 form = ArticleForm()
+                for img in request.FILES.getlist('image_field'):
+                    Image.objects.create(article=new_article, image=img,title=img.name)
 
                 return redirect('news_index')
     else:
