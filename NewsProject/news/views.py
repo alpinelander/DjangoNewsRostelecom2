@@ -21,7 +21,9 @@ class ArticleUpdateView(UpdateView):
     model = Article
     template_name = 'news/create_article.html'
     fields = ['title','anouncement','text','tags']
-@login_required(login_url="/")
+
+from django.conf import settings
+@login_required(login_url=settings.LOGIN_URL)
 def create_article(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST,request.FILES)

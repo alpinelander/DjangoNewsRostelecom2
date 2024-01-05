@@ -14,6 +14,11 @@ class Account(models.Model):
     gender = models.CharField(choices=gender_choices, max_length=20)
     account_image = models.ImageField(default='default.jpg',
                                       upload_to='account_images')
+    address = models.CharField(max_length=100,null=True)
+    vk = models.CharField(max_length=100,null=True)
+    instagram = models.CharField(max_length=100,null=True)
+    telegram = models.CharField(max_length=100,null=True)
+    phone = models.CharField(max_length=20,null=True)#,validators=[validate_phone])
     def __str__(self):
         return f"{self.user.username}'s account"
 
