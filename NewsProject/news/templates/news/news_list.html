@@ -43,8 +43,10 @@
                                   <p class="lead my-3">Дата: {{ article.date }}</p>
                                   <p class="lead my-3">{{ article.anouncement }}</p>
                                   <p class="lead mb-0"><a href="/news/{{ article.pk }}" class="text-white fw-bold">Полный текст...</a></p>
-
+                                  <p><small>Просмотры: {{ article.get_views }}</small></p>
+                                  <a class="btn btn-success" href="{% url 'favorites' article.pk %}"><i class="fa fa-bookmark">В избранное</i></a>
                                 </div>
+
                         </div>
                     </div>
                 {% endfor %}

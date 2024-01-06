@@ -1,7 +1,10 @@
-{% load static %}
 {% load bootstrap5 %}
+{% load static %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
+{% load users_extras %}
+{% load i18n %}
+
 <link rel="shortcut icon" type="image/png" href="{% static 'main/img/favicon.ico' %}">
 
 <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
@@ -55,7 +58,7 @@
                     <i class="fa fa-bars menu-icon"></i> <div class="d-none d-lg-block">Все новости</div>
                 </a>
               </li>
-                <li class="nav-item">
+{% comment %}                <li class="nav-item">
                   <a href=# {% if request.path  == '/examples/' %} class="link-active" aria-current="page" {% endif %}>
                         <i class="fa fa-hand menu-icon"></i>  <div class="d-none d-lg-block"> Примеры с урока</div>
                     </a>
@@ -71,8 +74,15 @@
                         <button class="btn btn-primary">🔍︎</button>
                     </div>
                 </div>
+{% endcomment %}                <li class="nav-item">
 
-
+              {% if request.user|has_group:"Authors" %}
+              <li>
+                <a href="#" {% if request.path  == '/myarticles/' %} class="link-active" aria-current="page" {% endif %}>
+                    <i class="fa fa-pen-nib menu-icon"></i>  <div class="d-none d-lg-block"> Мои статьи</div>
+                </a>
+              </li>
+              {% endif %}
                <li>
                 <a href="#" {% if request.path  == '/myarticles/' %} class="link-active" aria-current="page" {% endif %}>
                     <i class="fa fa-newspaper menu-icon"></i>  <div class="d-none d-lg-block"> Избранное</div>

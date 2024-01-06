@@ -6,7 +6,10 @@ from django.views.generic import DetailView, DeleteView, UpdateView
 # Create your views here.
 from .forms import *
 
-class ArticleDetailView(DetailView):
+
+
+from .utils import ViewCountMixin
+class ArticleDetailView(ViewCountMixin,DetailView):
     model = Article
     template_name = 'news/news_detail.html'
     context_object_name = 'article'
