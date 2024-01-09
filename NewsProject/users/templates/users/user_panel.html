@@ -45,12 +45,12 @@
                 </a>
               </li>
              <li>
-                <a href="{% comment %} {% url 'my_favorites_list' %} " {% if request.resolver_match.view_name  == 'my_favorites_list' %}  class="link-active" aria-current="page" {% endif %}{% endcomment %}>
+                <a href="{% url 'my_favorites_list' %} " {% if request.resolver_match.view_name  == 'my_favorites_list' %}  class="link-active" aria-current="page" {% endif %}>
                     <i class="fa fa-newspaper menu-icon"></i>  <div class="d-none d-lg-block"> Избранное</div>
                 </a>
               </li>
               <li>
-                <a href="{% comment %} {% url 'my_news_list' %}" {% if request.resolver_match.view_name  == 'my_news_list' %} class="link-active" aria-current="page" {% endif %} {% endcomment %}>
+                <a href="{% url 'my_news_list' %}" {% if request.resolver_match.view_name  == 'my_news_list' %} class="link-active" aria-current="page" {% endif %}>
                     <i class="fa fa-pen menu-icon"></i>  <div class="d-none d-lg-block"> Мои статьи</div>
                 </a>
               </li>

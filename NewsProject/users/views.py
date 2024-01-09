@@ -7,7 +7,34 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
 
+
+
+
+def profile(request):
+    context = dict()
+    return render(request,'users/profile.html',context)
+
+from .forms import AccountUpdateForm, UserUpdateForm
+
 from django.contrib.auth.decorators import login_required
+from news.models import Article
+@login_required
+def add_to_favorites(request, id):
+    name = 'Василий'
+    address = 'Москва'
+
+    article = Article.objects.get(id=id)
+    #проверям есть ли такая закладка с этой новостью
+    bookmark = FavoriteArticle.objects.filter(user=request.user.id,
+                                              article=article)
+    if bookmark.exists():
+        bookmark.delete()
+        messages.warning(request,f"Новость {article.title} удалена из закладок")
+    else:
+        bookmark = FavoriteArticle.objects.create(user=request.user, article=article)
+        messages.success(request,f"Новость {article.title} добавлена в закладки")
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
 def profile_update(request):
     user = request.user
     account = Account.objects.get(user=user)
@@ -38,6 +65,9 @@ def profile_delete(request):
     user.delete()
     return redirect('news')
 
+
+
+
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 def password_update(request):
@@ -52,9 +82,8 @@ def password_update(request):
 
     context = {"form": form}
     return render(request,'users/edit_password.html',context)
-def profile(request):
-    context = dict()
-    return render(request,'users/profile.html',context)
+
+
 def registration(request):
     if request.method=='POST':
         form = UserCreationForm(request.POST)
@@ -72,14 +101,15 @@ def registration(request):
             account = Account.objects.create(user=user,nickname=user.username)
             user = authenticate(username=username,password=password)
             login(request,user)
-#            messages.success(request,f'{username} был зарегистрирован!')
+            messages.success(request,f'{username} был зарегистрирован!')
 
             return redirect('home')
     else:
         form = UserCreationForm()
     context = {'form':form}
     return render(request,'users/registration.html',context)
-# Create your views here.
+
+
 def contact_page(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
@@ -93,27 +123,51 @@ def contact_page(request):
     context = {'form': form}
     return render(request,'users/contact_page.html',context)
 
+
 def index(request):
     print(request.user,request.user.id)
     user_acc = Account.objects.get(user=request.user)
-    print(user_acc, user_acc.birthdate, user_acc.gender)
+    print(user_acc.birthdate,user_acc.gender)
     return HttpResponse('Приложение Users')
 
-from django.contrib.auth.decorators import login_required
-from news.models import Article
-@login_required
-def add_to_favorites(request, id):
-    name = 'Василий'
-    address = 'Москва'
 
-    article = Article.objects.get(id=id)
-    #проверям есть ли такая закладка с этой новостью
-    bookmark = FavoriteArticle.objects.filter(user=request.user.id,
-                                              article=article)
-    if bookmark.exists():
-        bookmark.delete()
-        messages.warning(request,f"Новость {article.title} удалена из закладок")
-    else:
-        bookmark = FavoriteArticle.objects.create(user=request.user, article=article)
-        messages.success(request,f"Новость {article.title} добавлена в закладки")
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+from django.core.paginator import Paginator
+def my_news_list(request):
+    categories = Article.categories #создали перечень категорий
+    author = User.objects.get(id=request.user.id) #создали перечень авторов
+    articles = Article.objects.filter(author=author)
+    if request.method == "POST":
+        selected_category = int(request.POST.get('category_filter'))
+        if selected_category != 0: #фильтруем найденные результаты по категориям
+            articles = articles.filter(category__icontains=categories[selected_category-1][0])
+    else: #если страница открывется впервые
+        selected_category = 0
+    total = len(articles)
+    p = Paginator(articles,2)
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+    context = {'articles': page_obj, 'total':total,
+               'categories':categories,'selected_category': selected_category}
+
+    return render(request,'users/my_news_list.html',context)
+
+
+def my_favorites_list(request):
+    bookmarks = FavoriteArticle.objects.filter(user=request.user)
+    articles = Article.objects.filter(favoritearticle__in=bookmarks)
+    categories = Article.categories #создали перечень категорий
+
+    if request.method == "POST":
+        selected_category = int(request.POST.get('category_filter'))
+        if selected_category != 0: #фильтруем найденные результаты по категориям
+            articles = articles.filter(category__icontains=categories[selected_category-1][0])
+    else: #если страница открывется впервые
+        selected_category = 0
+    total = len(articles)
+    p = Paginator(articles,2)
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+    context = {'articles': page_obj, 'total':total,
+               'categories':categories,'selected_category': selected_category}
+
+    return render(request,'users/my_favorites.html',context)

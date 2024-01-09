@@ -1,13 +1,12 @@
+
 {% load bootstrap5 %}
 {% load static %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% load users_extras %}
 {% load i18n %}
-
 <link rel="shortcut icon" type="image/png" href="{% static 'main/img/favicon.ico' %}">
 
-<link rel="stylesheet" href="{% static 'main/css/style.css' %}">
 <script src="https://kit.fontawesome.com/a97047fead.js" crossorigin="anonymous"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,10 +17,20 @@
 <!-- jQuery !-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
 <!-- jQuery UI !-->
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="{% static 'main/css/search_autocomplete.css' %}">
 
+<script src="{% static 'main/js/jquery.js' %}"></script>
 <script>
+  $(function() {
+    $("#search_input").autocomplete({
+      source: "{% url 'search_auto' %}",
+      select: function (event, ui) { //item selected
+        AutoCompleteSelectHandler(event, ui)
+      },
+      minLength: 2,
+    });
+  });
+
   function AutoCompleteSelectHandler(event, ui)
   {
     var selectedObj = ui.item;
@@ -40,21 +49,23 @@
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
+           {% if request.user.id %}  <!-- проверяем аутентификацию-->
               <li class="nav-item">
                   <a href="/admin/" {% if request.path  == '/admin/' %} class="link-active" aria-current="page" {% endif %}>
                       <i class="fa fa-user menu-icon {% if request.path  == '/admin/' %} link-active {% endif %}" ></i>
                       <div class="d-none d-lg-block">Админка</div>
                   </a>
               </li>
-              <li class="nav-item">
+              {% endif %}
+{% comment %}               <li class="nav-item">
                    <a href="{% url 'home' %}" {% if request.resolver_match.view_name  == 'home' %} class="link-active" aria-current="page" {% endif %}>
                       <i class="fa fa-house menu-icon" ></i>
                       <div class="d-none d-lg-block">Главная</div>
                   </a>
               </li>
-
+{% endcomment %}
               <li class="nav-item">
-                 <a href="{% url 'news_index' %}" {% if request.resolver_match.view_name  == 'news_index' %} class="link-active" aria-current="page" {% endif %}>
+                 <a href="{% url 'news' %}" {% if request.resolver_match.view_name  == 'news' %} class="link-active" aria-current="page" {% endif %}>
                     <i class="fa fa-bars menu-icon"></i> <div class="d-none d-lg-block">Все новости</div>
                 </a>
               </li>
@@ -68,13 +79,13 @@
                     <i class="fa fa-backward menu-icon""></i>  <div class="d-none d-lg-block">Адаптированный шаблон </div>
                 </a>
               </li>
-                <div class="row">
+{% endcomment %} <div class="row">
                     <div class="search">
                         <input id="search_input">
                         <button class="btn btn-primary">🔍︎</button>
                     </div>
                 </div>
-{% endcomment %}                <li class="nav-item">
+             <li class="nav-item">
 
               {% if request.user|has_group:"Authors" %}
               <li>
@@ -83,11 +94,13 @@
                 </a>
               </li>
               {% endif %}
+           {% if request.user.id %}  <!-- проверяем аутентификацию-->
                <li>
-                <a href="#" {% if request.path  == '/myarticles/' %} class="link-active" aria-current="page" {% endif %}>
+                <a href="{% url 'my_favorites_list' %}" {% if request.resolver_match.view_name  == 'my_favorites_list' %} class="link-active" aria-current="page" {% endif %}>
                     <i class="fa fa-newspaper menu-icon"></i>  <div class="d-none d-lg-block"> Избранное</div>
                 </a>
               </li>
+              {% endif %}
 
               <li>
                 <a href="{% url 'about' %}" {% if request.resolver_match.view_name  == 'about' %} class="link-active" aria-current="page" {% endif %}>

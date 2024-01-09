@@ -7,18 +7,19 @@
 
 
         <div class="row">
-                <div class="content_center">
-                    <h1> Фильтр по автору и категории: </h1>
-                    <div class="form-group col-8">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="input-group">
-                                 <select class="form-select" name="author_filter" style="width:40%">
-                                      <option value="0">Все авторы</option>
-                                      {% for author in author_list %}
-                                          <option value="{{ author.id }}" {% if selected == author.id %} selected {% endif %}> {{ author.username }}</option>
-                                      {% endfor %}
-                                 </select>
+<div class="content_center">
+    <div class="row">
+        <label><h1> Фильтры: (Всего :{{ total }} результатов) </h1>
+            <form method="post">
+                {% csrf_token %}
+                        <div class="form-group col-11">
+                            <select class="form-select" name="author_filter" style="width:40%">
+                                <option value="0">Все авторы</option>
+                                {% for author in author_list %}
+                                <option value="{{ author.id }}" {% if selected_author == author.id %} selected {% endif %}> {{ author.username }}
+                                </option>
+                                {% endfor %}
+                            </select>
                             <select class="form-select" name="category_filter" style="width:40%">
                                 <option value="0">Все категории</option>
                                 {% for c in categories %}
@@ -26,13 +27,44 @@
                                 </option>
                                 {% endfor %}
                             </select>
-                                 <span class="input-group-btn">
-                                     <input type="submit" class="btn btn-success" value="Применить" style="margin: 0 15px">
-                                 </span>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                            <input type="submit" class="btn btn-success" value="Применить">
+                        </div>
+            </form>
+        </label>
+    </div>
+
+<div class="container px-4 text-center">
+  <div class="row gx-5">
+    <div class="col">
+     <div class="p-3">
+
+    <!--    ниже пагинатор -->
+    {% if total > 1 %}
+    <div class="row">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+              {% if articles.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ articles.previous_page_number }}">Предыдущая страница</a></li>
+              {% endif %}
+              {% for p in articles.paginator.page_range %}
+                {% if articles.number == p %}
+                    <li class="page-item"><p class="page-link" style="color:black;"> {{ p }}</p></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ p }}"> {{ p }}</a></li>
+                {% endif %}
+              {% endfor %}
+              {% if articles.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ articles.next_page_number }}">Следующая страница</a></li>
+              {% endif %}
+          </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+</div>
+    </div>
+  </div>
+</div>
                 {% for article in articles %}
                     <div class="single_news">
                         <div class="p-4 p-md-5 text-white rounded bg-dark" >
@@ -41,12 +73,19 @@
                                   <p class="lead my-3">id статьи: {{ article.pk }}</p>
                                   <p class="lead my-3">Автор: {{ article.author }}</p>
                                   <p class="lead my-3">Дата: {{ article.date }}</p>
+                    {% if article.image_set.all %}
+                    <div class="col-md-6 px-0">
+                        <img src="{{ article.image_set.all.0.image.url }}"
+                             style="width:100%; height:auto; border-radius:5px;">
+                        <br>
+                    </div>
+                    {% endif %}
+
                                   <p class="lead my-3">{{ article.anouncement }}</p>
-                                  <p class="lead mb-0"><a href="/news/{{ article.pk }}" class="text-white fw-bold">Полный текст...</a></p>
+                                  <p class="lead mb-0"><a href="/news/show/{{ article.pk }}" class="text-white fw-bold">Полный текст...</a></p>
                                   <p><small>Просмотры: {{ article.get_views }}</small></p>
                                   <a class="btn btn-success" href="{% url 'favorites' article.pk %}"><i class="fa fa-bookmark">В избранное</i></a>
                                 </div>
-
                         </div>
                     </div>
                 {% endfor %}

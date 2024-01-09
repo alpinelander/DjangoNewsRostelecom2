@@ -17,6 +17,13 @@ class MultipleFileField(forms.FileField):
         else:
             result = single_file_clean(data, initial)
         return result
+
+from django.forms import inlineformset_factory
+ImagesFormSet = inlineformset_factory(Article, Image, fields=("image",),extra=1,max_num=4,
+    widgets={
+        "image_field": MultipleFileField(required=False),
+    })
+from django.utils.translation import gettext as _
 class ArticleForm(ModelForm):
     image_field = MultipleFileField()
     class Meta:
