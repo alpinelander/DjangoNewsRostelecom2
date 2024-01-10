@@ -45,7 +45,7 @@
 <!--            d-none d-lg-block | Такой класс позвоялет спрятать элементы при отображении на экранах размером меньше lg-->
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
 <!--              <img  src="{% static 'main' %}/img/News_icon.png" width="40" height="50">
--->              <span class="fs-5 d-none d-lg-block responsive-title">Новости нашего города</span>
+-->              <span class="fs-5 d-none d-lg-block responsive-title">Новости науки и техники</span>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
@@ -57,13 +57,13 @@
                   </a>
               </li>
               {% endif %}
-{% comment %}               <li class="nav-item">
-                   <a href="{% url 'home' %}" {% if request.resolver_match.view_name  == 'home' %} class="link-active" aria-current="page" {% endif %}>
+               <li class="nav-item">
+                   <a href="{% url 'news_slider' %}" {% if request.resolver_match.view_name  == 'news_slider' %} class="link-active" aria-current="page" {% endif %}>
                       <i class="fa fa-house menu-icon" ></i>
                       <div class="d-none d-lg-block">Главная</div>
                   </a>
               </li>
-{% endcomment %}
+
               <li class="nav-item">
                  <a href="{% url 'news' %}" {% if request.resolver_match.view_name  == 'news' %} class="link-active" aria-current="page" {% endif %}>
                     <i class="fa fa-bars menu-icon"></i> <div class="d-none d-lg-block">Все новости</div>
@@ -122,7 +122,7 @@
                       <div class="d-none d-lg-block "> {{ request.user.username }} </div>
                   </button>
                   <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="{% comment %} {% url 'create_article' %} {% endcomment %}"> Создать статью</a></li>
+                    <li><a class="dropdown-item" href="{% url 'create_article' %}"> Создать статью</a></li>
                     <li><a class="dropdown-item" href="{% url 'profile' %}"> Мой аккаунт</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{% url 'logout' %}"> Выход</a></li>

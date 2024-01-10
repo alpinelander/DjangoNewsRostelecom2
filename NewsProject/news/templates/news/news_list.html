@@ -9,7 +9,7 @@
         <div class="row">
 <div class="content_center">
     <div class="row">
-        <label><h1> Фильтры: (Всего :{{ total }} результатов) </h1>
+        <label><h2> Фильтры: (Всего :{{ total }} результатов) </h2>
             <form method="post">
                 {% csrf_token %}
                         <div class="form-group col-11">
@@ -69,7 +69,7 @@
                     <div class="single_news">
                         <div class="p-4 p-md-5 text-white rounded bg-dark" >
                                 <div class="col-md-6 px-0">
-                                  <h1 class="display-4 fst-italic"> {{ article.title }}</h1>
+                                  <h2 class="display-6 fst-italic"> {{ article.title }}</h2>
                                   <p class="lead my-3">id статьи: {{ article.pk }}</p>
                                   <p class="lead my-3">Автор: {{ article.author }}</p>
                                   <p class="lead my-3">Дата: {{ article.date }}</p>

@@ -18,6 +18,7 @@ class Article(models.Model):
         ('E', 'Economic'),
         ('S', 'Science'),
         ('I', 'IT'),
+        ('P', 'Space'),
     )
     # поля
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

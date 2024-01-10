@@ -91,7 +91,7 @@ def create_article(request):
                 for img in request.FILES.getlist('image_field'):
                     Image.objects.create(article=new_article, image=img,title=img.name)
 
-                return redirect('news_index')
+                return redirect('news')
     else:
         form = ArticleForm()
     return render(request,'news/create_article.html', {'form':form})
@@ -155,3 +155,12 @@ def index(request):
 #     article.save()
 #     context = {'article':article}
 #     return HttpResponse(f'добавлена новость <h1>{ article.title }<h1/>')
+
+def news_slider(request):
+    articles = Article.objects.all()
+    #сортировка от свежих к старым новостям
+    articles=articles.order_by('-date')
+    total = len(articles)
+    context = {'articles': articles,'total':total,}
+
+    return render(request,'news/news_slider.html',context)

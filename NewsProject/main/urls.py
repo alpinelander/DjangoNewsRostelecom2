@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.urls import path
 from . import views
+from news import views as vvv
 urlpatterns = [
-    path("", views.index, name = 'home'),
+    path("", vvv.news_slider, name='news_slider'),
+#    path("", views.index, name = 'home'),
     path("about/", views.about, name='about'),
     path("contacts/", views.contacts, name='contacts'),
     path("sidebar/", views.sidebar, name='sidebar'),
